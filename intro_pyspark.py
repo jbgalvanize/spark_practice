@@ -139,9 +139,42 @@ numbers.mean()
 numbers.sum()
 numbers.count()
 
-'''Actions for Key Value pairs'''
+'''Actions for Key Value pairs
+Here I am using the imput.txt file
+from above again.'''
+
+'''Create imput.txt file'''
+%%writefile imput2.txt
+I have
+another example
+of some text stuff
+that can
+help us use some rdd 
+like stuff 
 
 
+'''more practice'''
+data2 = sc.textFile('imput2.txt')
+data2.map(lambda line: line.split()).collect()
+
+#This is a default dict.  To use spark countByValue need as an RDD
+datastuff2 = data2.flatMap(lambda line: line.split()) #.countByValue() 
+
+#This returns a pair RDD - gives word count
+datastuff2 = data2.flatMap(lambda line: line.split())\
+					.map(lambda word: (word,1))\
+					.reduceByKey(lambda i,j: i+j) 
+
+#This doesn't make a lot of sense here, but this gives you 
+#a list of all values for a particular key
+#Getting Tired = Don't think this stuff here is right
+datastuff2 = data2.flatMap(lambda line: line.split())
+datastuff2 = data2.flatMap(lambda line: line.split())\
+					.map(lambda word: (word,1))\
+					.groupByKey() 
+
+datastuff2.keys()
+datastuff2.values()
 
 '''
 Working with sales.txt dataset
