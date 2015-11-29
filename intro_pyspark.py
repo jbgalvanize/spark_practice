@@ -89,4 +89,71 @@ sc.textFile('imput.txt') \
 	.flatMap(lambda x: x.split()) \
 	.collect()
 
+'''Famous wordcount example'''
+data = sc.textFile('input.txt')
+
+'''list of tuples'''
+wordCount = data.flatMap(lambda line: line.split())\
+				.map(lambda word: (word, 1))\
+				.reduceByKey(lambda i,j: i+j)
+
+'''default dictionary'''
+wordCount2 = data.flatMap(lambda line: line.split())\
+				.countByValue()
+
+
+'''Another flatMap example'''
+lines = sc.parallelize(['hello world', 'hi', 'oh hi there world'])
+words = lines.flatMap(lambda line: line.split())
+
+'''Actions'''
+lines.count()
+lines.collect()
+lines.first()
+lines.take(2)
+
+words.count()
+words.collect()
+words.first()
+words.take(2)
+
+
+numb = sc.parallelize([1,2,3,3])
+numbers = sc.parallelize([3,3,2,1,1,1,2,3,4,5])
+
+'''Basic transformations'''
+numb.map(lambda x: x+1)
+#flatMap is common with text to extract words
+numb.filter(lambda x: x != 1)
+numb.distinct()
+numb.sample(True, .5, 2) #as an action see takeSample
+'''withReplacement=, proportion, seed'''
+
+'''Basic actions'''
+numb.collect()
+numb.take(2)
+numb.top(2)
+numb.takeSample(True, 10, 3)
+numbers.takeSample(True, 20, 3)
+numbers.mean()
+numbers.sum()
+numbers.count()
+
+'''Actions for Key Value pairs'''
+
+
+
+'''
+Working with sales.txt dataset
+'''
+%%writefile sales.txt
+#ID    Date           Store   State  Product    Amount
+101    11/13/2014     100     WA     331        300.00
+104    11/18/2014     700     OR     329        450.00
+102    11/15/2014     203     CA     321        200.00
+106    11/19/2014     202     CA     331        330.00
+103    11/17/2014     101     WA     373        750.00
+105    11/19/2014     202     CA     321        200.00
+
+data = sc.textFile('sales.txt')
 
