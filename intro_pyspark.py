@@ -230,7 +230,12 @@ rdd4.subtractByKey(rdd3).collect()
 
 #join on key give value as a list of values
 rdd3.join(rdd4).collect()
-rdd3.join(rdd4).groupByKey()
+rdd3.rightOuterJoin(rdd4).collect()
+rdd3.leftOuterJoin(rdd4).collect()
+
+#group data from both RDDs sharing the same key
+rdd3.cogroup(rdd4)
+
 
 
 
