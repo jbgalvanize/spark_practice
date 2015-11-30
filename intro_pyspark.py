@@ -176,6 +176,64 @@ datastuff2 = data2.flatMap(lambda line: line.split())\
 datastuff2.keys()
 datastuff2.values()
 
+'''Combining rdds'''
+rdd = sc.parallelize([1,1,2,3])
+rdd1 = sc.parallelize([1,10,2,3,4,5])
+rdd2 = sc.parallelize([1,6,2,3,7,8])
+
+rdd1.intersection(rdd2).collect()
+rdd1.union(rdd2).collect()
+(rdd + rdd).collect()
+(rdd1 + rdd2).collect()
+
+'''Working with Key Value Pairs'''
+#https://spark.apache.org/docs/1.1.1/api/python/pyspark.rdd.RDD-class.html
+tmp = [('a', 1), ('b', 2), ('1', 3), ('d', 4), ('2', 5)]
+sc.parallelize(tmp).sortByKey().first()
+
+sc.parallelize(tmp).sortByKey(True, 1).collect()
+#True indicates ascending, false indicates descending
+sc.parallelize(tmp).sortByKey(True, 2).collect()
+#The result of this is the same
+#The second argument is the nnymber of partitions was done
+#to compute.
+
+#You can extend an rdd
+tmp2 = [('Mary', 1), ('had', 2), ('a', 3), ('little', 4), ('lamb', 5)]
+tmp2.extend([('whose', 6), ('fleece', 7), ('was', 8), ('white', 9)])
+sc.parallelize(tmp2).sortByKey(True, 3, keyfunc=lambda k: k.lower()).collect()
+#This puts capital letter keys first
+sc.parallelize(tmp2).sortByKey().collect()
+
+#We can sort by key or value
+sc.parallelize(tmp).sortBy(lambda x: x[0]).collect()
+sc.parallelize(tmp).sortBy(lambda x: x[1]).collect()
+
+#Can still do the same commands as in traditional (non pair) RDD
+sc.parallelize(tmp).filter(lambda x: x[0] == '1').collect()
+sc.parallelize(tmp2).filter(lambda x: x[1] < 5).collect()
+
+#Apparently glom can helpful with computation speed? I see what is happening, but I 
+#don't really get this...
+rdd = sc.parallelize([1, 1, 2, 3], 2)
+rdd = sc.parallelize([1, 1, 2, 3], 3)
+sorted(rdd.glom().collect())
+
+'''We can also join our key value pairs on the keys in a similar way to 
+the way we join in SQL'''
+rdd3 = sc.parallelize([(1,2),(3,4),(3,6),(2,5)])
+rdd4 = sc.parallelize([(3,9),(5,9)])
+
+#Gives all keyValue pairs for where key is in the first but not the second
+rdd3.subtractByKey(rdd4).collect()
+rdd4.subtractByKey(rdd3).collect()
+
+#join on key give value as a list of values
+rdd3.join(rdd4).collect()
+rdd3.join(rdd4).groupByKey()
+
+
+
 '''
 Working with sales.txt dataset
 '''
