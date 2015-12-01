@@ -240,9 +240,27 @@ rdd3.cogroup(rdd4)
 #Read in our data
 file_rdd = sc.textFile('data/toy_data.txt')
 
+#1
 import json
 a_rdd = file_rdd.map(lambda line: json.loads(line))\
                 .map(lambda d: (d.keys()[0], int(d.values()[0])))
+a_rdd.collect()
+
+#2
+rdd_more = a_rdd.filter(lambda x: x[1] > 5)
+rdd_more.collect()
+
+#3
+max_cooks = a_rdd.reduceByKey(lambda x,y: max(x,y))
+
+#4
+vals = a_rdd.values().sum()
+
+'''Part 3
+This is in your notes in the black book. 
+'''
+
+'''Part 4'''
 
 
 '''
