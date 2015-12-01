@@ -236,7 +236,13 @@ rdd3.leftOuterJoin(rdd4).collect()
 #group data from both RDDs sharing the same key
 rdd3.cogroup(rdd4)
 
+'''Part 2'''
+#Read in our data
+file_rdd = sc.textFile('data/toy_data.txt')
 
+import json
+a_rdd = file_rdd.map(lambda line: json.loads(line))\
+                .map(lambda d: (d.keys()[0], int(d.values()[0])))
 
 
 '''
