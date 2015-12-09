@@ -260,6 +260,17 @@ vals = a_rdd.values().sum()
 This is in your notes in the black book. 
 '''
 
+
+'''Word Count'''
+rdd = sc.parallelize(['hi there', 'hi Jesse', 'what up', 'balloon up', 'hi balloon'])
+result = rdd.flatMap(lambda line: line.split(' '))\
+			.map(lambda x: (x, 1))\
+			.reduceByKey(lambda x,y: x + y)
+
+result.collect()
+result.count()
+
+
 '''Part 4'''
 
 
